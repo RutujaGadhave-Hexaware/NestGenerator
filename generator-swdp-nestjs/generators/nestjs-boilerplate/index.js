@@ -30,7 +30,7 @@ module.exports = class extends Generator {
     );
 
     this.fs.copyTpl(
-      this.templatePath("catalog-info.yaml"),
+      this.templatePath("code/catalog-info.yaml"),
       this.destinationPath("catalog-info.yaml")
   )
   }
