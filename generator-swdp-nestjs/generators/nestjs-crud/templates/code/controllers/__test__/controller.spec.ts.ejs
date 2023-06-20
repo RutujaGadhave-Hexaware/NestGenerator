@@ -1,0 +1,103 @@
+import { NotFoundException } from '@nestjs/common';
+import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+import { <%=model%> } from '../../entities/<%=selector%>.entity';
+import { <%=model%>Service } from '../../services/<%=selector%>.service';
+import { <%=model%>Controller } from '../<%=selector%>.controller';
+
+describe('<%=model%>Controller', () => {
+  let controller: <%=model%>Controller;
+  let service: <%=model%>Service;
+
+  const single<%=model%> = {
+    <%_ for (let field in mockData) { _%>
+    <%= field %>: <%- mockData[field] %>,
+    <%_ } _%>
+  } as <%=model%>;
+
+  const multiple<%=models%> = [
+    {
+      <%_ for (let field in mockData) { _%>
+      <%= field %>: <%- mockData[field] %>,
+      <%_ } _%>
+    },
+  ] as <%=model%>[];
+
+  const created<%=model%> = {
+    _id: '1',
+    <%_ for (let field in mockData) { _%>
+    <%= field %>: <%- mockData[field] %>,
+    <%_ } _%>
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [<%=model%>Controller],
+      providers: [
+        <%=model%>Service,
+        {
+          provide: getModelToken(<%=model%>.name),
+          useValue: {},
+        },
+      ],
+    }).compile();
+    controller = module.get<<%=model%>Controller>(<%=model%>Controller);
+    service = module.get<<%=model%>Service>(<%=model%>Service);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  describe('findAll', () => {
+    it('should return an array of <%=model.toLowerCase()%>s', async () => {
+      jest.spyOn(service, 'findAll').mockResolvedValueOnce(multiple<%=models%>);
+      expect(await controller.findAll()).toEqual(multiple<%=models%>);
+    });
+  });
+
+  describe('findById', () => {
+    it('should return a <%=model.toLowerCase()%> with the given id', async () => {
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(created<%=model%>);
+      expect(await controller.findById(created<%=model%>._id)).toEqual(created<%=model%>);
+    });
+    it('should throw a NotFoundException when <%=model.toLowerCase()%> is not found', async () => {
+      jest.spyOn(service, 'findById').mockResolvedValueOnce(null);
+      await expect(controller.findById(created<%=model%>._id)).rejects.toThrowError();
+    });
+  });
+
+  describe('create', () => {
+    it('should return the newly created <%=model.toLowerCase()%>', async () => {
+      jest.spyOn(service, 'create').mockResolvedValueOnce(created<%=model%>);
+      expect(await controller.create(single<%=model%>)).toEqual(created<%=model%>);
+    });
+  });
+
+  describe('update', () => {
+    it('should return the updated <%=model.toLowerCase()%>', async () => {
+      jest.spyOn(service, 'update').mockResolvedValueOnce(created<%=model%>);
+      expect(await controller.update(created<%=model%>._id, single<%=model%>)).toEqual(created<%=model%>);
+    });
+    it('should throw a NotFoundException when <%=model.toLowerCase()%> is not found', async () => {
+      jest.spyOn(service, 'update').mockResolvedValueOnce(null);
+      await expect(controller.update(created<%=model%>._id, single<%=model%>)).rejects.toThrowError();
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete <%=model.toLowerCase()%> successfully', async () => {
+      jest.spyOn(service, 'delete').mockResolvedValue(created<%=model%>);
+      const response = await controller.delete(created<%=model%>._id);
+      expect(response).toEqual(created<%=model%>);
+      expect(service.delete).toHaveBeenCalledWith(created<%=model%>._id);
+    });
+    it('should throw NotFoundException if <%=model.toLowerCase()%> not found', async () => {
+      jest.spyOn(service, 'delete').mockResolvedValue(null);
+      await expect(controller.delete(created<%=model%>._id)).rejects.toThrowError(
+        NotFoundException,
+      );
+      expect(service.delete).toHaveBeenCalledWith(created<%=model%>._id);
+    });
+  });
+});

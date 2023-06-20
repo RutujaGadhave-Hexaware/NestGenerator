@@ -1,0 +1,14 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+
+export type <%=model%>Document = <%=model%> & Document;
+
+@Schema()
+export class <%=model%> {
+   <% for (var i =0; i < fields.length;  i++ ) { %>
+   <%="@Prop()"%>
+   <%=fields[i].name%>: <%=fields[i].datatype%>; 
+   <% } %>
+}
+
+export const <%=model%>Schema = SchemaFactory.createForClass(<%=model%>);

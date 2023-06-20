@@ -1,0 +1,57 @@
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Patch,
+    Post,
+    Put,
+  } from "@nestjs/common";
+  import { <%=model%> } from "../entities/<%=selector%>.entity";
+  import { <%=model%>Service } from "../services/<%=selector%>.service";
+  
+
+  @Controller("/<%=selector%>")
+  export class <%=model%>Controller {
+    constructor(private <%=ref%>Service: <%=model%>Service) {}
+  
+    @Get()
+    findAll() {
+      return this.<%=ref%>Service.findAll();
+    }
+  
+    @Get("/:id")
+    async findById(@Param("id") id: string) {
+      const <%=ref%> = await this.<%=ref%>Service.findById(id);
+  
+      if (!<%=ref%>) throw new NotFoundException("<%=model%> not found");
+  
+      return <%=ref%>;
+    }
+  
+    @Post()
+    create(@Body() <%=ref%>: <%=model%>) {
+      return this.<%=ref%>Service.create(<%=ref%>);
+    }
+  
+    @Put("/:id")
+    async update(@Param("id") id: string, @Body() <%=ref%>: <%=model%>) {
+      const received<%=model%> = await this.<%=ref%>Service.update(id, <%=ref%>);
+  
+      if (!received<%=model%>) throw new NotFoundException("<%=model%> not found");
+  
+      return received<%=model%>;
+    }
+  
+    @Delete("/:id")
+    async delete(@Param("id") id: string) {
+      const received<%=model%> = await this.<%=ref%>Service.delete(id);
+  
+      if (!received<%=model%>) throw new NotFoundException("<%=model%> not found");
+  
+      return received<%=model%>;
+    }
+  }
+  

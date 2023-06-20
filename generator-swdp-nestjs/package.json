@@ -1,0 +1,25 @@
+{
+  "name": "generator-swdp-nestjs",
+  "version": "1.0.0",
+  "description": "Yeoman generator for nestjs boilerplate and crud",
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "files": [
+    "generators"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "author": "Sameer Sagar <SameerS5-Hexaware@hexaware.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@types/esprima": "^4.0.3",
+    "pluralize": "^8.0.0",
+    "ts-morph": "^14.0.0",
+    "validate-npm-package-name": "^4.0.0",
+    "yeoman-generator": "^5.7.0"
+  },
+  "devDependencies": {}
+}

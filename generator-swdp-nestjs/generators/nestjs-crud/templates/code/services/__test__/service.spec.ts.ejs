@@ -1,0 +1,79 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { getModelToken } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { <%=model%>Document, <%=model%> } from '../../entities/<%=selector%>.entity';
+import { <%=model%>Service } from '../<%=selector%>.service';
+
+describe('<%=model%>Service', () => {
+    let service: <%=model%>Service;
+    let model: Model<<%=model%>Document>;
+
+    const mock<%=model%> = {
+        _id: '616abed5ea5b5e296ae5ec8d',
+        <%_ for (let field in mockData) { _%>
+        <%= field %>: <%- mockData[field] %>,
+        <%_ } _%>
+    };
+
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [
+                <%=model%>Service,
+                {
+                    provide: getModelToken(<%=model%>.name),
+                    useValue: {
+                        new: jest.fn().mockResolvedValue(mock<%=model%>),
+                        constructor: jest.fn().mockResolvedValue(mock<%=model%>),
+                        find: jest.fn(),
+                        findById: jest.fn(),
+                        findByIdAndUpdate: jest.fn(),
+                        findByIdAndRemove: jest.fn(),
+                        create: jest.fn()
+                    },
+                },
+            ],
+        }).compile();
+        service = module.get<<%=model%>Service>(<%=model%>Service);
+        model = module.get<Model<<%=model%>Document>>(getModelToken(<%=model%>.name));
+    });
+
+    it('should be defined', () => {
+        expect(service).toBeDefined();
+    });
+
+    describe('findAll', () => {
+        it('should return an array of <%=model.toLowerCase()%>s', async () => {
+            const mock<%=model%>s = [mock<%=model%>];
+            jest.spyOn(model, 'find').mockReturnValueOnce({ exec: jest.fn().mockResolvedValueOnce(mock<%=model%>s) } as any);
+            expect(await service.findAll()).toBe(mock<%=model%>s);
+        });
+    });
+
+    describe('findById', () => {
+        it('should return a <%=model.toLowerCase()%>', async () => {
+            jest.spyOn(model, 'findById').mockReturnValueOnce({ exec: jest.fn().mockResolvedValueOnce(mock<%=model%>) } as any);
+            expect(await service.findById('616abed5ea5b5e296ae5ec8d')).toBe(mock<%=model%>);
+        });
+    });
+
+    describe('create', () => {
+        it('should create a <%=model.toLowerCase()%>', async () => {
+            jest.spyOn(model, 'create').mockReturnValueOnce(mock<%=model%> as any);
+            expect(await service.create(mock<%=model%> as <%=model%>)).toBe(mock<%=model%>);
+        });
+    });
+
+    describe('update', () => {
+        it('should update a <%=model.toLowerCase()%>', async () => {
+            jest.spyOn(model, 'findByIdAndUpdate').mockReturnValueOnce(mock<%=model%> as any);
+            expect(await service.update('616abed5ea5b5e296ae5ec8d', mock<%=model%> as <%=model%>)).toBe(mock<%=model%>);
+        });
+    });
+
+    describe('delete', () => {
+        it('should delete a <%=model.toLowerCase()%>', async () => {
+            jest.spyOn(model, 'findByIdAndRemove').mockReturnValueOnce({ exec: jest.fn().mockResolvedValueOnce(mock<%=model%>) } as any);
+            expect(await service.delete('616abed5ea5b5e296ae5ec8d')).toBe(mock<%=model%>);
+        });
+    });
+});

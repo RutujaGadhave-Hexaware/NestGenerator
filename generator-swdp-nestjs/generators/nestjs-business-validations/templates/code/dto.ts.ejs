@@ -1,0 +1,11 @@
+import { <%= importStatements.join(', ') %> } from 'class-validator';
+
+export class <%= entityName %>DTO {
+  <%_ fields.forEach(field => { _%>
+  <%_ field.validations.forEach(validation => { _%>
+  <%= validation %>
+  <%_ }) _%>
+  <%= field.name %>: <%= field.datatype%>;
+  
+  <%_ }) _%>
+}
