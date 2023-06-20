@@ -28,5 +28,10 @@ module.exports = class extends Generator {
       this.destinationPath(".env"),
       { config }
     );
+
+    this.fs.copyTpl(
+      this.templatePath("catalog-info.yaml"),
+      this.destinationPath("catalog-info.yaml")
+  )
   }
 };
